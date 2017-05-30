@@ -1,28 +1,29 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text } from 'react-native'
 
-export default class Home extends Component {
+class Account extends Component {
   static navigationOptions = {
-    title: '首页',
+    title: '更新',
+    tabBarIcon: ({ focused, tintColor }) => (
+        <Image
+            resizeMode="center"
+            style={[styles.icon, { tintColor: focused ? tintColor : '#bbb' }]}
+            source={require('../../asset/images/update.png')}
+        />
+    ),
+    drawerLabel: '首页',
     drawerIcon:({ tintColor }) => (
         <Image
             source={require('../../asset/images/house.png')}
-            style={[styles.tabIcon, {tintColor: tintColor}]}
+            style={[styles.icon, {tintColor: tintColor}]}
         />
     ),
   };
 
-  onPress = ()=>{
-    // this.props.navigation.navigate('Search', {
-    //   name: 'Home',
-    // });
-  };
-
   render() {
-    console.log('home',this.props);
     return (
       <View style={styles.container}>
-        <Text onPress={this.onPress}>书架</Text>
+        <Text>分类页</Text>
       </View>
     )
   }
@@ -34,8 +35,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tabIcon: {
-    width: 32,
+  icon: {
+    width: 23,
     height: 32,
   },
 });
+
+export default Account

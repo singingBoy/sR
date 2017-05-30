@@ -1,28 +1,25 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text } from 'react-native'
 
-export default class Home extends Component {
+export default class About extends Component {
   static navigationOptions = {
-    title: '首页',
+    title: '关于',
     drawerIcon:({ tintColor }) => (
-        <Image
-            source={require('../../asset/images/house.png')}
-            style={[styles.tabIcon, {tintColor: tintColor}]}
-        />
+      <Image
+      source={require('../../asset/images/about.png')}
+      style={[styles.tabIcon, {tintColor: tintColor}]}
+      />
     ),
   };
 
   onPress = ()=>{
-    // this.props.navigation.navigate('Search', {
-    //   name: 'Home',
-    // });
-  };
+    this.props.navigation.navigate('Login');
+  }
 
   render() {
-    console.log('home',this.props);
     return (
       <View style={styles.container}>
-        <Text onPress={this.onPress}>书架</Text>
+        <Text onPress={this.onPress}>关于页</Text>
       </View>
     )
   }

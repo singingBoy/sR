@@ -1,18 +1,11 @@
 import React, { Component } from 'react'
 import {StackNavigator} from 'react-navigation';
 import {StyleSheet,TouchableHighlight,Image} from 'react-native';
-import Home from './home';
-import Search from '../search/search';
+import TabNavigator from '../../routers/TabNavigator'
 
 const Main = StackNavigator({
-    Home: { screen: Home },
-    Search: { screen: Search },
-    // Profile: {
-    //     path: 'people/:name',
-    //     screen: MyProfileScreen,
-    // },
+    Main: { screen: TabNavigator },
 },{
-    initialRouteName: 'Home',
     mode: 'modal',
     headerMode: 'screen',
     cardStyle: {
@@ -28,9 +21,14 @@ const Main = StackNavigator({
             headerTitleStyle: {
                 color:'#fff'
             },
+            headerLeft: (
+                <TouchableHighlight style={styles.btn} onPress={()=> navigation.navigate('DrawerOpen')}>
+                    <Image style={styles.tabIcon} source={require('../../asset/images/config.png')}/>
+                </TouchableHighlight>
+            ),
             headerRight: (
-                <TouchableHighlight onPress={()=> {navigation.navigate('Search',{name:'主页跳转'})}}>
-                  <Image style={{width: 20, height: 20,}} source={require('../../asset/images/search.png')} />
+                <TouchableHighlight style={styles.btn} onPress={()=> {navigation.navigate('Search',{name:'主页跳转'})}}>
+                    <Image style={styles.searchImage} source={require('../../asset/images/search.png')} />
                 </TouchableHighlight>
             )
       }
@@ -38,9 +36,16 @@ const Main = StackNavigator({
 });
 
 const styles = StyleSheet.create({
+    btn: {flex:1,justifyContent:'center'},
     searchImage:{
         width: 20,
         height: 20,
+        marginRight: 10,
+    },
+    tabIcon: {
+        width: 32,
+        height: 32,
+        marginLeft: 10,
     },
 });
 

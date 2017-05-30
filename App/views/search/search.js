@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, Text } from 'react-native'
 
 export default class Search extends Component {
   static navigationOptions = {
-    title: 'Filter',
+    title: '搜索',
   };
 
   onPress = ()=>{
