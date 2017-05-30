@@ -36,9 +36,7 @@ class Filter extends Component {
   renderCard(items, title){
     return(
         <Card title={title}>
-          {
-            this.renderRow(items)
-          }
+          {this.renderRow(items)}
         </Card>
     )
   }
