@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {StackNavigator} from 'react-navigation';
-import {StyleSheet,TouchableHighlight,Image,View} from 'react-native';
-import { Icon } from 'react-native-elements'
+import {StyleSheet,TouchableHighlight,Image,View, Text} from 'react-native';
 
 const factory = (name, screen)=>{
       return  StackNavigator({
@@ -26,7 +25,7 @@ const factory = (name, screen)=>{
                       <TouchableHighlight style={styles.btn} onPress={()=>navigation.goBack(null)}>
                           <Image style={styles.tabIcon} source={require('../../asset/images/back-icon.png')}/>
                       </TouchableHighlight>
-                  )
+                  ),
               }
           },
       });
