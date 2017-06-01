@@ -13,6 +13,7 @@ import Config from '../views/drawer/Config'
 import Me from '../views/drawer/Me'
 import Login from '../views/drawer/Login'
 import Search from '../views/search/search';
+import Welcome from '../views/drawer/Welcome';
 
 import SlideMenu from '../views/drawer/SlideMenu'
 import factory from '../views/drawer/StackNavigatorFactory'
@@ -23,6 +24,7 @@ import factory from '../views/drawer/StackNavigatorFactory'
 const DrawerRouter = DrawerNavigator(
     {
         // Drawer: {screen: MainNavigator},
+        Welcome: { screen: Welcome},
         Home: { screen: Home },
         About: { screen: factory('About',About )},
         Cache: { screen: factory('Cache',Cache )},
@@ -35,7 +37,7 @@ const DrawerRouter = DrawerNavigator(
         // drawerWidth :200,
         drawerPosition :'left',
         //自定义Drawer界面
-        contentComponent: props => <SlideMenu exclude={["Login","Search"]} {...props}/>,
+        contentComponent: props => <SlideMenu exclude={["Login", "Search", "Welcome"]} {...props}/>,
         contentOptions: {
             activeTintColor: '#01c497',
             activeBackgroundColor: '#fff',

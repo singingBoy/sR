@@ -33,7 +33,8 @@ const startUp = ()=>{
         // 或是在任何时候，直接对storage.sync进行赋值修改
         sync: null  // 这个sync文件是要你自己写的
     });
-    global.storage = storage
+    global.storage = storage;
 };
+
 
 export default setup

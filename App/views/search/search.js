@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text } from 'react-native'
-import { SearchBar, Button ,Icon, Badge} from 'react-native-elements'
+import { SearchBar,Icon, Badge} from 'react-native-elements'
 import {ThemeList} from '../../utils/themeFactory';
 
 export default class Search extends Component {
@@ -24,6 +24,7 @@ export default class Search extends Component {
 
     constructor(props) {
         super(props);
+        console.log('search',global.dailyBooks);
         this.state = {
             search: false,
             keyWord: "",
@@ -38,9 +39,7 @@ export default class Search extends Component {
             onSearch: this.onSearch,
         });
         //load 读取
-        storage.load({
-            key: 'history'
-        }).then(ret => {
+        storage.load({key: 'history'}).then(ret => {
             this.setState({
                 history: ret
             });
@@ -70,8 +69,7 @@ export default class Search extends Component {
         storage.save({
             key: 'history',  // 注意:请不要在key中使用_下划线符号!
             data:  this.state.history.slice(0, 10),//只保存最新10条记录
-            // 如果设为null，则永不过期,如果不指定过期时间，则会使用defaultExpires参数
-            expires: 1000 * 3600 * 24 * 7
+            expires: 1000 * 3600 * 24 * 7// 如果设为null，则永不过期,如果不指定过期时间，则会使用defaultExpires参数
         });
 
         //2、搜索请求
@@ -100,16 +98,6 @@ export default class Search extends Component {
                     <Text style={[{color:'#03a9f4'},styles.margin10]} onPress={this.cleanHistory}>清除</Text>
                 </View>
                 <View style={styles.content}>
-                    {this.state.history.map( (h,i) =>{
-                        const badgeColor = ThemeList[Number.parseInt(Math.random()*20+1)];
-                        return <Badge key={i} value={h} containerStyle={[{backgroundColor:badgeColor},styles.margin10]}/>
-                    })}
-                </View>
-                <View style={styles.historyBox}>
-                    <Text style={[{color:'#000'},styles.margin10]}>每日推荐：</Text>
-                </View>
-                <View style={styles.content}>
-                    {/* TODO 查询 */}
                     {this.state.history.map( (h,i) =>{
                         const badgeColor = ThemeList[Number.parseInt(Math.random()*20+1)];
                         return <Badge key={i} value={h} containerStyle={[{backgroundColor:badgeColor},styles.margin10]}/>

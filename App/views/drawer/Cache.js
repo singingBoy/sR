@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text } from 'react-native'
+import { Button } from 'react-native-elements'
 
 export default class Cache extends Component {
   static navigationOptions = {
@@ -12,10 +13,18 @@ export default class Cache extends Component {
     ),
   };
 
+  cleanCache=()=>{
+      storage.remove({key:'dailyBooks'});
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>缓存管理页</Text>
+        <Button
+            raised
+            onPress={this.cleanCache}
+            icon={{name: 'cached'}}
+            title='清除缓存' />
       </View>
     )
   }
