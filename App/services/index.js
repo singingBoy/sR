@@ -1,19 +1,25 @@
 'use strict'
-import {requestHtmlText, requestHtmlBlob} from '../utils/request';
+import {requestHtmlText, requestHtmlBlob, requestPage} from '../utils/request';
+import {translateHtml} from '../utils/common'
 import Cheerio from 'cheerio-without-node-native';
+import { Toast } from 'antd-mobile';
 
 //查询网址 酷包小说网 http://www.kushubao.com/
 const kuShuBao = 'http://mip.kushubao.com';//首页
 const detailHttp = 'http://m.kushubao.com/info-';//详情页
 
 //酷书包每日推荐
-export async function queryDaily() {
-    const data = await requestHtmlText(kuShuBao);
-    dailyBooks(data);
+export async function queryDaily(navigation) {
+    // const data = await requestHtmlText(kuShuBao);
+    // const bold = await requestHtmlBlob(kuShuBao);
+    // const data = await translateHtml(bold, 'gb2312');
+    const data = await requestPage(kuShuBao);
+    console.log(data)
+    dailyBooks(data,navigation);
 }
 
-export function dailyBooks(data) {
-    const $ = Cheerio.load(data.data);
+export function dailyBooks(data, navigation) {
+    const $ = Cheerio.load(data);
     const blocks = $('body').find('.article');
     let dailyBooks = [];
     blocks.each( (i, item)=>{
@@ -46,5 +52,6 @@ export function dailyBooks(data) {
         expires: 1000 * 3600 * 24
     });
     global.dailyBooks = dailyBooks;
+    navigation.navigate('Home');
 }
 
