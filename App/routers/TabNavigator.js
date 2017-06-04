@@ -2,7 +2,7 @@
 import { TabNavigator, TabBarBottom, } from 'react-navigation';
 
 import Home from '../views/tabar/Home';
-import Update from '../views/tabar/Update';
+import BookMarks from '../views/tabar/BookMarks';
 import Filter from '../views/tabar/Filter';
 
 /**
@@ -11,13 +11,13 @@ import Filter from '../views/tabar/Filter';
 const HomeTabNavigator = TabNavigator(
     {
         Home: {screen: Home,},
-        Update: {screen: Update,},
+        BookMarks: {screen: BookMarks,},
         Filter: {screen: Filter,},
     }
     ,{
         initialRouteName: 'Home',
         tabBarComponent: TabBarBottom,
-        order:['Filter','Home','Update',],
+        order:['Filter','Home','BookMarks',],
         tabBarPosition: 'bottom',
         swipeEnabled: true,
         animationEnabled: true,

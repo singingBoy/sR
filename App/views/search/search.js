@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Image, Text } from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList } from 'react-native'
 import { SearchBar,Icon, Badge} from 'react-native-elements'
-import {ThemeList} from '../../utils/themeFactory';
+import {ThemeList} from '../../utils/themeFactory'
+import {queryBooks} from '../../services'
+import { List } from 'antd-mobile'
+import {replaceVoid} from '../../utils/common'
 
 export default class Search extends Component {
     static navigationOptions = ({ navigation, screenProps })=>({
@@ -29,6 +32,9 @@ export default class Search extends Component {
             search: false,
             keyWord: "",
             history: [],
+            list: [],
+            refreshing: true,
+            page: 0,
         }
     }
 
@@ -62,9 +68,7 @@ export default class Search extends Component {
     /*搜索头部调用*/
     onSearch = ()=>{
         this.state.history.splice(0,0,this.state.keyWord);
-        this.setState({
-            search: true,
-        });
+
         //1、存储 搜索记录
         storage.save({
             key: 'history',  // 注意:请不要在key中使用_下划线符号!
@@ -73,6 +77,15 @@ export default class Search extends Component {
         });
 
         //2、搜索请求
+        queryBooks().then( list => {
+            console.log(list)
+            this.setState({
+                search: true,
+                list: list,
+                refreshing: false,
+            });
+        });
+
     };
 
     onPress = ()=>{
@@ -107,8 +120,66 @@ export default class Search extends Component {
         )
     }
 
+    onRefreshEnd = ()=>{
+        const {list, page} = this.state;
+        this.setState({
+            page: page+1,
+            refreshing: true,
+        });
+        const params = {
+            q: this.state.keyWord,
+            p: this.state.page,
+        };
+        queryBooks(params).then( data => {
+            list.push(data);
+            this.setState({
+                list: list,
+                refreshing: false,
+            });
+        })
+    };
+
+    _keyExtractor = (item, index) => item.id;
+
+    _renderItem = ({item}) => {
+        const type = replaceVoid(item.info[0]).split('：')[1];
+        const title = replaceVoid(item.title);
+        const dec = replaceVoid(item.dec);
+        return(
+            <List.Item
+                key={item.id}
+                extra={ type }
+                align="top"
+                thumb={<Image style={{width:60,height:80}} source={{uri:item.imgUrl}}/>}
+                multipleLine >
+                { title }
+                <List.Item.Brief style={{marginVertical:10,width:280}}>{dec}</List.Item.Brief>
+            </List.Item>
+        )
+    };
+
     renderList(){
-        return <Text>结果页</Text>
+        console.log(this.state.list);
+        return (
+            <FlatList
+                ListHeaderComponent={HeaderComponent}
+                refreshing={this.state.refreshing}
+                data={this.state.list}
+                keyExtractor={this._keyExtractor}
+                renderItem={this._renderItem}
+                scrollToEnd={this.onRefreshEnd}
+            />
+        )
+    }
+}
+
+class HeaderComponent extends Component {
+    render(){
+        return(
+            <View style={{alignItems:'center'}}>
+                <Text >(顶部下拉出现 TODO )加载中...</Text>
+            </View>
+        )
     }
 }
 

@@ -19,3 +19,26 @@ export async function translateHtml(blob, translateType){
         }
     });
 }
+
+/*
+* 循环截取数组
+* */
+export function sliceData (start, end, arr){
+    let res = arr.slice(start, end);
+    if(end > arr.length && start < arr.length){
+        const num = end % arr.length;
+        res = res.concat(arr.slice(0, num))
+    }else if(start > arr.length){
+        start = start % arr.length;
+        end = end % arr.length;
+        res = arr.slice(start, end);
+    }
+    return res
+}
+
+/*
+* 字符串剔除：任何空白字符，包括空格、制表符、换页符等等。
+* */
+export function replaceVoid(str) {
+    return str.replace(/\s/g,"");
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text, Dimensions, ScrollView } from 'react-native'
 import { Carousel, WhiteSpace, WingBlank, List } from 'antd-mobile';
 import {aType, bType} from '../../asset/data/data';
+import {sliceData} from  '../../utils/common';
 
 const appWidth = Dimensions.get('window').width;
 const bg = [
@@ -10,6 +11,16 @@ const bg = [
     require('../../asset/images/bg/xh.png'),
     require('../../asset/images/bg/xk.png'),
     require('../../asset/images/bg/ls.png'),
+];
+const icon = [
+    require('../../asset/images/type/type10.png'),
+    require('../../asset/images/type/type1.png'),
+    require('../../asset/images/type/type12.png'),
+    require('../../asset/images/type/type11.png'),
+    require('../../asset/images/type/type2.png'),
+    require('../../asset/images/type/type5.png'),
+    require('../../asset/images/type/type4.png'),
+    require('../../asset/images/type/type8.png'),
 ];
 
 class Home extends Component {
@@ -33,7 +44,8 @@ class Home extends Component {
   constructor(props){
     super(props);
     this.state = {
-      dailyBooks: global.dailyBooks,
+        dailyBooks: dailyBooks,
+        books1: 0,
     }
   }
 
@@ -61,7 +73,15 @@ class Home extends Component {
               {this.renderCarousel()}
           </Carousel>
         </View>
-          {this.renderCard1()}
+          {
+              dailyBooks.map( (item, index)=>{
+                if(index % 2 === 0){
+                    return this.renderCard1(item,index)
+                }else{
+                    return this.renderCard2(item,index)
+                }
+              })
+          }
       </ScrollView>
     )
   }
@@ -78,40 +98,62 @@ class Home extends Component {
     )
   }
 
-  renderCard1(){
+  renderCard2(data, index){
+      const books = data.books;
       const header = (
           <View style={{flexDirection:'row',justifyContent:'center',marginHorizontal:20,marginVertical:20,}}>
               <View style={{flexDirection:'row',justifyContent:'center'}}>
-                  <Image style={{width:20,height:20}} source={require('../../asset/images/type/type10.png')}/>
-                  <Text>热门小说</Text>
+                  <Image style={{width:20,height:20,marginRight:5}} source={icon[index]}/>
+                  <Text>{data.type}</Text>
+              </View>
+          </View>
+      );
+      return(
+          <View key={index}>
+              {header}
+              <ScrollView horizontal={true} style={{ paddingVertical:10, backgroundColor: '#fff'}}>
+                  { books.map( book => (
+                      <View key={book.id} style={{alignItems:'center', width:100}}>
+                          <Image style={{width:60,height:80}} source={{uri:book.imgUrl}}/>
+                          <Text style={{color: '#000',flexWrap:'wrap',width:80,textAlign:'center'}}>{book.name}</Text>
+                      </View>
+                  ))}
+              </ScrollView>
+          </View>
+      )
+  }
+
+  renderCard1(data,index){
+      const num = this.state.books1;
+      const books = sliceData(num*4, (num+1)*4, data.books);
+      const header = (
+          <View style={{flexDirection:'row',justifyContent:'center',marginHorizontal:20,marginVertical:20,}}>
+              <View style={{flexDirection:'row',justifyContent:'center'}}>
+                  <Image style={{width:20,height:20,marginRight:5}} source={icon[index]}/>
+                  <Text>{data.type}</Text>
               </View>
               <View style={{position:'absolute',right: 10}}>
-                  <Text>换一换</Text>
+                  <Text onPress={()=>this.setState({books1:num+1})}>换一换</Text>
               </View>
 
           </View>
       );
       return(
-          <View>
-              <List renderHeader={() => header}>
-                  <List.Item
-                      extra="10:30"
-                      align="top"
-                      thumb={<Image style={{width:80,height:80}} source={{uri:"https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"}}/>}
-                      multipleLine >
-                          标题文字
-                          <List.Item.Brief style={{marginVertical:10}}>副标题</List.Item.Brief>
-                  </List.Item>
-                  <List.Item
-                      extra="10:30"
-                      align="top"
-                      thumb={<Image style={{width:80,height:80}} source={{uri:"https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"}}/>}
-                      multipleLine >
-                      标题文字
-                      <List.Item.Brief style={{marginVertical:10}}>副标题</List.Item.Brief>
-                  </List.Item>
-              </List>
-          </View>
+          <List key={index} renderHeader={() => header}>
+              {
+                  books.map( book =>(
+                          <List.Item
+                              key={book.id}
+                              extra="【历史】"
+                              align="top"
+                              thumb={<Image style={{width:60,height:80}} source={{uri:book.imgUrl}}/>}
+                              multipleLine >
+                              {book.name}
+                              <List.Item.Brief style={{marginVertical:20}}>副标题</List.Item.Brief>
+                          </List.Item>
+                  ))
+              }
+          </List>
       )
   }
 }

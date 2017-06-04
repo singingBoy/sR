@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Image, Text } from 'react-native'
 
-class Account extends Component {
+class BookMarks extends Component {
   static navigationOptions = {
-    title: '更新',
+    title: '书架',
     tabBarIcon: ({ focused, tintColor }) => (
         <Image
             resizeMode="center"
             style={[styles.icon, { tintColor: focused ? tintColor : '#bbb' }]}
-            source={require('../../asset/images/update.png')}
+            source={require('../../asset/images/bookMarks.png')}
         />
     ),
     drawerLabel: '首页',
@@ -23,7 +23,7 @@ class Account extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>分类页</Text>
+        <Text>我的书架</Text>
       </View>
     )
   }
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 23,
+    width: 32,
     height: 32,
   },
 });
 
-export default Account
+export default BookMarks

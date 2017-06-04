@@ -22,6 +22,7 @@ class Welcome extends Component {
         //初始推荐小说数据
         storage.load({key: 'dailyBooks'}).then(data => {
             global.dailyBooks = data;
+            Toast.loading('读取数据...',2)
             this.props.navigation.navigate('Home');
         }).catch( err=> {
             queryDaily(this.props.navigation)
