@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text } from 'react-native'
 import { queryDaily } from '../../services';
 import { Toast } from 'antd-mobile';
 import RNFetchBlob from 'react-native-fetch-blob';
+import { NavigationActions } from 'react-navigation'
 
 class Welcome extends Component {
 
@@ -11,6 +12,7 @@ class Welcome extends Component {
         this.state = {
             status: false,
         }
+        console.log(props)
     }
 
     componentDidMount(){
@@ -22,8 +24,14 @@ class Welcome extends Component {
         //初始推荐小说数据
         storage.load({key: 'dailyBooks'}).then(data => {
             global.dailyBooks = data;
-            Toast.loading('读取数据...',2)
-            this.props.navigation.navigate('Home');
+            const resetAction = NavigationActions.reset({
+                index: 0,
+                actions: [
+                    NavigationActions.navigate({ routeName: 'Main'})
+                ]
+            });
+            this.props.navigation.dispatch(resetAction);
+            // this.props.navigation.navigate('Home');
         }).catch( err=> {
             queryDaily(this.props.navigation)
         });

@@ -5,12 +5,13 @@ import {ThemeList} from '../../utils/themeFactory'
 import {queryBooks} from '../../services'
 import { List } from 'antd-mobile'
 import {replaceVoid} from '../../utils/common'
+import { Toast } from 'antd-mobile';
 
 export default class Search extends Component {
     static navigationOptions = ({ navigation, screenProps })=>({
         title: '搜索',
         headerRight: (
-          <View style={{flex:1, flexDirection: 'row',alignItems: 'center',width:200}}>
+          <View style={{flex:1, flexDirection: 'row',alignItems: 'center',width:200,justifyContent:'flex-end'}}>
               <SearchBar
                   round
                   lightTheme
@@ -20,22 +21,22 @@ export default class Search extends Component {
                   onChangeText={(txt)=>navigation.state.params.onChange(txt)}
                   icon={{name: 'forward'}}
                   placeholder='搜索...' />
-              <Icon name='search' color="#fff" onPress={()=>navigation.state.params.onSearch()}/>
+              <Icon style={{width:50}} name='search' color="#fff" onPress={()=>navigation.state.params.onSearch()}/>
           </View>
         )
     });
 
     constructor(props) {
         super(props);
-        console.log('search',global.dailyBooks);
         this.state = {
-            search: false,
-            keyWord: "",
-            history: [],
-            list: [],
-            refreshing: true,
-            page: 0,
+            search: false,//显示历史还是搜索结构
+            keyWord: "",//搜索关键字
+            history: [],//搜索历史
+            list: [],//搜索结构
+            refreshing: false,//刷新状态
+            page: 0,//搜索第几页
         }
+        console.log(props);
     }
 
     componentWillMount(){
@@ -67,18 +68,23 @@ export default class Search extends Component {
 
     /*搜索头部调用*/
     onSearch = ()=>{
-        this.state.history.splice(0,0,this.state.keyWord);
+        const {keyWord, history} = this.state;
+        this.setState({refreshing: true,});
 
-        //1、存储 搜索记录
-        storage.save({
-            key: 'history',  // 注意:请不要在key中使用_下划线符号!
-            data:  this.state.history.slice(0, 10),//只保存最新10条记录
-            expires: 1000 * 3600 * 24 * 7// 如果设为null，则永不过期,如果不指定过期时间，则会使用defaultExpires参数
-        });
+        if(keyWord){
+            history.splice(0,0,keyWord);
+
+            //1、存储 搜索记录
+            storage.save({
+                key: 'history',  // 注意:请不要在key中使用_下划线符号!
+                data:  history.slice(0, 10),//只保存最新10条记录
+                expires: 1000 * 3600 * 24 * 7// 如果设为null，则永不过期,如果不指定过期时间，则会使用defaultExpires参数
+            });
+        }
 
         //2、搜索请求
-        queryBooks().then( list => {
-            console.log(list)
+        const params = {q: keyWord, p: 0,};
+        queryBooks(params).then( list => {
             this.setState({
                 search: true,
                 list: list,
@@ -131,9 +137,25 @@ export default class Search extends Component {
             p: this.state.page,
         };
         queryBooks(params).then( data => {
-            list.push(data);
             this.setState({
-                list: list,
+                list: list.concat(data),
+                refreshing: false,
+            });
+        })
+    };
+
+    _onRefresh = ()=>{
+        this.setState({
+            page: 0,
+            refreshing: true,
+        });
+        const params = {
+            q: this.state.keyWord,
+            p: this.state.page,
+        };
+        queryBooks(params).then( data => {
+            this.setState({
+                list: data,
                 refreshing: false,
             });
         })
@@ -142,13 +164,13 @@ export default class Search extends Component {
     _keyExtractor = (item, index) => item.id;
 
     _renderItem = ({item}) => {
-        const type = replaceVoid(item.info[0]).split('：')[1];
+        const author = replaceVoid(item.info[0]).split('：')[1];
         const title = replaceVoid(item.title);
         const dec = replaceVoid(item.dec);
         return(
             <List.Item
                 key={item.id}
-                extra={ type }
+                extra={ author }
                 align="top"
                 thumb={<Image style={{width:60,height:80}} source={{uri:item.imgUrl}}/>}
                 multipleLine >
@@ -160,14 +182,18 @@ export default class Search extends Component {
 
     renderList(){
         console.log(this.state.list);
+        const {showHeader, showFooter} = this.state;
         return (
             <FlatList
+                onRefresh={this._onRefresh}
                 ListHeaderComponent={HeaderComponent}
+                ListFooterComponent={FooterComponent}
                 refreshing={this.state.refreshing}
                 data={this.state.list}
                 keyExtractor={this._keyExtractor}
                 renderItem={this._renderItem}
-                scrollToEnd={this.onRefreshEnd}
+                onEndReachedThreshold={0.1}
+                onEndReached={()=>this.onRefreshEnd()}
             />
         )
     }
@@ -178,6 +204,16 @@ class HeaderComponent extends Component {
         return(
             <View style={{alignItems:'center'}}>
                 <Text >(顶部下拉出现 TODO )加载中...</Text>
+            </View>
+        )
+    }
+}
+
+class FooterComponent extends Component {
+    render(){
+        return(
+            <View style={{alignItems:'center'}}>
+                <Text >(加载更多... TODO )</Text>
             </View>
         )
     }

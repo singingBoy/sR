@@ -25,7 +25,7 @@ const DrawerRouter = DrawerNavigator(
     {
         // Drawer: {screen: MainNavigator},
         Welcome: { screen: Welcome},
-        Home: { screen: Home },
+        Main: { screen: Home },
         About: { screen: factory('About',About )},
         Cache: { screen: factory('Cache',Cache )},
         FontManager: { screen: factory('FontManager',FontManager )},
