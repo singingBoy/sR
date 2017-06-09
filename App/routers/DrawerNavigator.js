@@ -18,6 +18,8 @@ import Welcome from '../views/drawer/Welcome';
 import SlideMenu from '../views/drawer/SlideMenu'
 import factory from '../views/drawer/StackNavigatorFactory'
 
+import Stack from './StackNavigator';
+
 /**
  * Top-level navigator. Renders the application UI.
  */
@@ -25,14 +27,15 @@ const DrawerRouter = DrawerNavigator(
     {
         // Drawer: {screen: MainNavigator},
         Welcome: { screen: Welcome},
-        Main: { screen: Home },
-        About: { screen: factory('About',About )},
-        Cache: { screen: factory('Cache',Cache )},
-        FontManager: { screen: factory('FontManager',FontManager )},
-        Config: { screen: factory('Config',Config )},
-        Me: { screen: factory('Me',Me )},
-        Login: { screen: factory('Login',Login )},
-        Search: { screen: factory('Search',Search )},
+        Main: {screen: Stack},
+        // Main: { screen: Home },
+        // About: { screen: factory('About',About )},
+        // Cache: { screen: factory('Cache',Cache )},
+        // FontManager: { screen: factory('FontManager',FontManager )},
+        // Config: { screen: factory('Config',Config )},
+        // Me: { screen: factory('Me',Me )},
+        // Login: { screen: factory('Login',Login )},
+        // Search: { screen: factory('Search',Search )},
     },{
         // drawerWidth :200,
         drawerPosition :'left',
